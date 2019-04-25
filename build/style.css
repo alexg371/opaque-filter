@@ -1,0 +1,287 @@
+body, html, h1, h2, h3, h4, h5, h6, p, div, span, img, ul, li{
+	padding: 0;
+	margin: 0;
+}
+
+/*html {
+	filter: hue-rotate(90deg);
+}*/
+
+a {
+	color: white;
+	text-decoration: none;
+}
+
+ul, li{
+	list-style: none;
+}
+
+*{
+	box-sizing: border-box;
+	vertical-align: top;
+}
+
+#watching {
+	display: none;
+}
+
+
+
+/* #post_interface textarea {
+	background-color: black;
+	outline: none;
+	border: 0.1vw solid white;
+	resize: none;
+	width: 23vw;
+	padding: 0.5vw;
+	color: white;
+	font-family: Helvetica;
+	font-weight: 600;
+	font-size: 0.9vw
+} */
+
+ #post_interface form {
+	position: absolute;
+	margin-left: 13.6vw;
+}
+
+#post_interface h2 {
+	position: absolute;
+	font-size: 2vw;
+	width: 8vw;
+}
+
+#post_interface p {
+	text-transform: uppercase;
+	margin: 0;
+	font-size: 0.9vw;
+	margin-bottom: 0.5vw;
+}
+
+#my-profile {
+	position: absolute;
+	width: 100%;
+}
+
+#profile {
+	position: absolute;
+	width: 30%;
+}
+
+#profile h1 {
+	font-family: helvetica;
+	font-size: 2.5vw;
+	margin-left: 3.7vw;
+	margin-top: 3vw;
+	padding: 0;
+}
+
+#profile h2 {
+	font-family: arial;
+	font-size: 1vw;
+	font-weight: 300;
+	margin-left: 3vw;
+	width: 20vw;
+}
+
+#profile h3 { 
+	display: none;
+}
+
+#posts {
+	width: 70%;
+	margin-left: 30%;
+	margin-top: 3vw;
+}
+
+.postContainer {
+	margin-bottom: 2vw;
+	border-bottom: 0.1vw solid white;
+}
+
+.postContainer h2 {
+	font-family: arial black;
+	font-size: 1.8vw;
+	font-weight: 300;
+	color: #DCDCDC;
+}
+
+.postContainer h4 {
+	font-family: arial;
+	font-style: italic;
+	font-size: 1.2vw;
+	font-weight: 300;
+	color: #DCDCDC;
+
+}
+
+.postContent {
+	margin-top: 2vw;
+	margin-bottom: .8vw;
+}
+
+.postContainer p {
+	font-size: 1.2vw;
+	font-family: arial;
+	font-weight: 300;
+	width: 60vw;
+	margin-bottom: 1vw;
+	color: #DCDCDC;
+}
+
+#posts {
+	margin-bottom: 5vw;
+}
+
+#watchingWrapper {
+	width: 100%;
+}
+
+#watching {
+	margin-top: 3vw;
+}
+
+.userBlock h2 {
+	font-family: helvetica;
+	font-size: 2.5vw;
+	width: 25%;
+	margin-left: 3.7vw;
+}
+
+.userBlockPosts {
+	/*display: none;*/
+	width: 70%;
+	margin-left: 30%;
+	margin-bottom: 5vw;
+}
+
+/* .individualUserPost {
+	margin-bottom: 2vw;
+	border-bottom: 0.1vw solid white;
+} */
+
+.individualUserPost h2 {
+	width: 70%;
+	font-family: helvetica;
+	font-size: 2.5;
+	margin: 0;
+}
+
+.individualUserPost h4 {
+	font-family: helvetica;
+	font-size: 1vw;
+	font-weight: 600;
+}
+
+/* .individualUserPost div {
+	font-size: 1.5vw;
+	font-family: times new roman;
+	font-style: italic;
+	font-weight: 400;
+	width: 60vw;
+	margin-top: 1vw;
+	margin-bottom: 1vw;
+	position: center;
+} */
+
+#userBio {
+	display: none;
+}
+
+.reportButton{
+	position: absolute;
+	text-align: center;
+	color: grey;
+	padding: 25px;
+	right: 15px;
+	z-index: 3;
+	cursor: pointer;
+}
+
+.reportButton:hover{
+	color: red;
+}
+
+body {
+	background: #050505;
+	opacity: 70%;
+}
+
+#overlay {
+  position: fixed;
+  display: none;
+  width: 50%;
+  height: 50%;
+  top: 20%;
+  left: 20%;
+  right: 0;
+  bottom: 0;
+  background-color: #A8A8A8;
+  z-index: 2;
+  cursor: pointer;
+  border:3px solid #fff;
+}
+
+#text{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 50px;
+  color: white;
+  transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+}
+
+form {
+	position: absolute;
+	top: 40%;
+	left: 40%;
+}
+
+/* .radio_field {
+	color: white;
+}
+
+.button_field {
+	margin-top: 20px;
+}
+*/
+
+.slidecontainer {
+  width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: #d3d3d3; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4CAF50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}

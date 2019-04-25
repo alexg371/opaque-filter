@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>opaque 4-2</title>
+	<link rel="stylesheet" type="text/css" href="build/style.css">
+	<meta charset="utf-8">
+	<script type="text/javascript" src="build/network-interfacing.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+	<!-- your profile: -->
+	<div id="my-profile">
+		<div id="profile"></div>
+		<div id="posts"></div>
+	</div>
+
+	<!-- user posts: -->
+	<div id="watchingWrapper">
+		<div id="watching">
+			<ul id="watching_users"></ul>
+		</div>
+	</div>
+	
+
+<script type="text/javascript">
+		
+	window.onload = function(){  
+		console.log("boilerplate profile")
+		// doc elements
+		var profileContainer = document.getElementById("profile"),
+				postContainer = document.getElementById("posts"),
+				watchingContainer = document.getElementById("watching"),
+				watchingList = document.getElementById("watching_users"),
+				postingInterface = document.getElementById("post_interface"),
+				centralListContainer = document.getElementById("central_list"),
+				menuContainer = document.getElementById("menu");
+
+		// dat vars for your personal page (automatically generated)
+		// var url = "dat://"
+		var url = window.location.toString(),
+			archive = new DatArchive(url);
+
+		// loadFlaglist returns the flaglist: this can be used for our list as well as for other's lists
+		async function loadFlagList(archive){
+			var flaglist = await archive.readFile('/flaglist.json')
+			
+			if(flaglist){
+				// safeguard for if a user doesnt have a flaglist
+				flaglist = JSON.parse(flaglist)
+		
+				var userInfo = {
+					"flaglist" : flaglist,
+					"userarchive" : archive
+				}
+				
+				// userarchive is this user's dat url (can be used to specifiy which post to look for)
+			
+				return userInfo	
+			}else{
+				var userInfo = {
+					"flaglist" : "",
+					"userarchive" : ""
+				}	
+				return userInfo
+			}
+		}
+		
+		/*
+			// loadFlagList() currently is just applied to a single user (the current owner of the site)
+			
+			// if we want to have this apply to a list of users:
+				loadProfile(ourarchiveurl)
+				.then(function(results){
+						
+						// results.users // returns users list
+						
+						results.users.forEach(function(user, index){
+							
+							var userDatArchiveInstance = new DatArchive(user);
+							
+							loadFlagList(userDatArchiveInstance)
+							.then(function(){
+								// see below (i.e. reference below function to fill this stuff in)
+								
+							})
+							
+						})
+						
+					
+				})
+			
+			// to do for 4/2
+			- writeFile logic (allows flagged posts to be saved in flaglist.json)
+				1. get file contents
+				2. save file contents to variable
+				3. update variable
+				4. stringify variable to prepare for json 
+				5. save stringified variable to json file
+			
+				1. var flaglistobject = archive.readFile("/flaglist.json")
+				// on report, create this object with respective contents:
+				2. var newflaggedpost = {
+						timestamp: 1234567,
+						reported: "flagged"
+					}
+				3. flaglistobject.flaggedposts.push(newflaggedpost)
+				4. flaglistobject = JSON.stringify(flaglistobject)
+				5. archive.writeFile("/flaglist.json", flaglistobject)
+			
+		
+		*/
+		async function writeNewPost(datUrl){
+			var archive = new DatArchive(datUrl)
+			await archive.writeFile('/hello.txt', 'world')	
+			return "finished"
+		}
+		
+		var ourUrl = "dat://f4cf1caa79ea1d0f1ab392c25363303d1206531adb838766eba5689cc87430a2";
+		
+		writeNewPost(ourUrl)
+		.then(function(results){
+			console.log(results)
+		})
+		
+
+
+		loadFlagList(archive)
+		.then(function(results){
+			
+				console.log("flaglist results: ", results.flaglist)
+				
+				// for loop:
+				if(results.flaglist){
+					
+					var flagList = results.flaglist.flaggedposts;
+					// if not empty
+					console.log("not empty")
+					flagList.forEach(function(flaggedPost, postIndex){
+						
+						console.log(postIndex, flaggedPost.timestamp)
+						// this whole function needs to happen after we've appended the posts (this means that this function probably needs to go further down the page)
+						// we want to use the flaggedPost.title to find the respective post
+							// the post can be found either by looking for the h4 with the timestamp in it
+							// or we can change the network-interfacing.js template literal for the post (line 220) to have an id with the timestamp
+							// then using that h4 contents or id, get the post's opacity and update it
+								// get opacity, opacity -= 0.1;
+					})
+					
+				}else{return}
+		})
+
+
+		/******************************************************************************/
+
+		console.log("archive", archive)
+
+		loadProfile(archive)
+		.then(function(userInfo){
+			// append profile info: 
+			var username = userInfo.profile.username,
+					bio = userInfo.profile.bio,
+					datUrl = userInfo.profile.datUrl,
+					email = userInfo.profile.email;
+
+			// menuContainer.insertAdjacentHTML("afterbegin", `
+			// 	<p onclick="displayProfile()" id="profileButton">${username}</p>
+			// `);
+
+		});
+
+		/******************************************************************************/
+
+		loadProfile(archive)
+		.then(function(userInfo){
+			// append profile info: 
+			var username = userInfo.profile.username,
+					bio = userInfo.profile.bio,
+					datUrl = userInfo.profile.datUrl,
+					email = userInfo.profile.email,
+					picforprofile = userInfo.profile.picforprofile;
+
+			profileContainer.insertAdjacentHTML("beforeend", `
+				<h1>${username}</h1>
+				<img src="${picforprofile}">
+				<h2>${bio}</h2>
+				<h3>${datUrl}</h3>
+				<a id="emailLink" href="mailto:${email}?Subject=Hello%20again" target="_top">${email}</a>
+			`);
+
+			var userCounter = 0, 
+					userList = userInfo.profile.users;
+			
+			usersProfiles(userCounter, userList, centralListContainer) // all users and a link to their site
+
+			userAndTheirPosts(userCounter, userList, watchingContainer) // all users and their posts
+
+		});
+
+		/******************************************************************************/
+
+		// load my posts
+		loadPosts(archive)
+		.then(function(userPosts){
+			
+			// console.log("POSTS: ", userPosts.posts.length)
+
+			if(userPosts.posts && userPosts.posts.length > 0){
+				userPosts.posts.forEach(function(post){
+								
+					loadPostContent(archive, post)
+					.then(function(postAndArchive){
+						// console.log("post", postAndArchive.post)
+						postContainer.insertAdjacentHTML("beforeend", `
+							<div class="postContainer">
+								<h2>${postAndArchive.post.title}</h2>
+								<h4>${postAndArchive.post.timestamp}</h4>
+								<p class="postContent">${postAndArchive.post.content}</p>
+								// <div class="reportButton">
+								<div id="overlay">
+	  							<form action="">
+	  							 	<div class="radio_field">
+			  							<input type="radio" name="reportFeature" value="Report">Report<br>
+			  							<input type="radio" name="reportFeature"  value="Block">Block<br>
+			  							<input type="radio" name="reportFeature"  value="Flag">Flag<br>
+	  								</div>
+	  								<div class="button_field">
+				  							<button onclick="send()">Send</button>
+				  							<button onclick="off()">Close</button>
+	  								</div>
+	  							</form>
+								</div>
+
+								<div style="padding:20px">
+	  						
+								  <button class="buttonStyle" onclick="on()">Report</button>
+	</div>
+
+
+							</div>
+						`)
+					})
+				})
+			}
+
+		});
+	
+		/******************************************************************************/
+
+		// if i'm the owner, reveal my interface: 
+		isOwner(archive)
+		.then(function(e){
+			if(e){
+				 postingInterface.insertAdjacentHTML("beforeend", `
+				
+						<h2 class="titlepost">Post</h2>
+						<form id="post_to">
+							<p>Title</p>
+							<input class="titlearestyle" type="text" name="Title" value=""><br><br>
+							<p>Content</p>
+							<textarea class="txtareastyle" name="Content" rows="4" cols="50" value=""></textarea><br><br>
+							<input type="submit" class="buttonstyle" name="Post">
+						</form>
+					`)
+
+				var postSubmission = document.getElementById("post_to");
+
+				if (postSubmission != null) {
+					writePost(archive, postSubmission);
+				}
+
+				
+
+			}else{
+				console.log("isOwner returns: ", e, "\n it looks like you are not the owner of this site");
+			}
+		})
+
+
+		/******************************************************************************/
+
+		// once you've added the class dat url (below), you can uncomment this function to have a complete list sourced from our central files: 
+
+		/*
+		var classArchive = new DatArchive("CLASSHASHBASEURLHERE");
+
+		loadUsersCentral(classArchive, "/classList.json")
+		.then(function(userList){
+			console.log("userList", userList)
+			var userCounter = 0,
+					userList = userList.users;
+			usersProfiles(userCounter, userList, centralListContainer)
+
+		})
+		*/
+
+	};
+
+	function displayProfile() {
+		document.getElementById("profileWrapper").style.display = "block";
+		document.getElementById("watching").style.display = "none";
+		// document.getElementById("post_interface").style.display = "none";
+	}
+
+	function displayFeed() {
+		document.getElementById("watching").style.display = "block";
+		document.getElementById("profileWrapper").style.display = "none";
+		// document.getElementById("post_interface").style.display = "none";
+	}
+
+	function displayPostInterface() {
+		document.getElementById("menu").style.height = "40vw";
+		document.getElementById("users").style.transform = "translateY(-36.5vw)";
+	}
+
+	function hidePostInterface() {
+		document.getElementById("menu").style.height = "3.5vw";
+		document.getElementById("users").style.transform = "translateY(0vw)";
+	}	
+	
+	function on() {
+  document.getElementById("overlay").style.display = "block";
+}
+
+function off() {
+  document.getElementById("overlay").style.display = "none";
+}
+
+	// var displayingPosts = document.getElementsByClassName("userPosts");
+
+	// function displayUserPosts() {
+	// 	displayingPosts[0].style.display = "block";
+	// }
+
+
+	// $( ".userBlock h2" ).click(function() {
+	// 	 $( this ).css('color', 'red');
+	// 	console.log("click function is working")
+	// });
+
+// 	$(document).ready(function(){
+//   $("p").click(function(){
+//     alert("The paragraph was clicked.");
+//   });
+// });
+
+	
+
+
+</script>
+</body>
+</html>

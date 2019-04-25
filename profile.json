@@ -1,0 +1,11 @@
+{
+	"username" : "Geddes",
+	"bio" : "wanderer + wonderer",
+	"datUrl"	: "dat://f4cf1caa79ea1d0f1ab392c25363303d1206531adb838766eba5689cc87430a2",
+	"email" : "alexg371@newschool.edu",
+	"users" : [
+		"dat://669d86f6cdc2f2728ac9955ef4f0aa159c75219ce3442f36c7643e68e64cd0a1/",
+		"dat://0a1fd58a940387c98d52dbb4d496633e43155a2423bdd4c180eb2ca3c17d915c/",
+		"dat://fb64323acd0bd4ccf8a835bf68eab26eca6ffa4a3c2d5a7d5f2cdd208aabf13b/"
+	]
+}
