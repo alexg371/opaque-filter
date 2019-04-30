@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  cursor: pointer;
+}
+</style>
+<script type="text/javascript" src="build/network-interfacing.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+<body>
+
+<h1>Custom Range Slider</h1>
+<p>Drag the slider to display the current value.</p>
+
+<div class="slidecontainer">
+
+<!-- in our actual file, each slider would be attached to a post -->
+  <input type="range" min="1" max="100" value="10" class="slider" id="myRange">
+  <p>Value: <span id="demo"></span></p>
+
+  <input type="range" min="1" max="100" value="10" class="slider" id="otherRange">
+  <p>Value: <span id="otherdemo"></span></p>
+</div>
+
+<script>
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value/100;
+
+
+var oururl = "dat://a4edd37faeb80450fdd6f7e0d9d4251360be38fcda9d8d38bc6bfda8de4ab1aa+preview",
+    ourDatArchive = new DatArchive(oururl);
+
+// load our file w/ contents as starting point in our local variable:
+async function getFlagList(archive){
+
+  var ourFlagList = await archive.readFile('/flaglist.json')
+  ourFlagList = JSON.parse(ourFlagList)
+  
+  return ourFlagList;
+}
+
+getFlagList(ourDatArchive)
+.then(function(returnedJSONFile){
+  // outline what we do with the file:
+
+  var currentOpacity = returnedJSONFile.flaggedposts[0].opacity,
+      currentTimeStamp = returnedJSONFile.flaggedposts[0].timestamp; // use current timestamp after appending all your posts to find the flagged posts (you can do this just by comparing the post timestamp with "this" (i.e. currentTimeStamp) time stamp)
+      //console.log("test: ", currentOpacity, currentTimeStamp)
+
+      var slider = document.getElementById("myRange");
+      slider.setAttribute("data-timestamp", currentTimeStamp)
+      slider.value = currentOpacity*100; // update slider with last saved value
+
+  // this would be placed into a for loop to apply to each post that's been flagged
+
+    /*
+
+      for each flagged item in flaglist.json
+        compare this flagged item's timestamp to each listed post's timestamp by having another for loop:
+
+        for each post
+          if flagged item's timestamp == this post's timestamp
+            update our slider's value
+
+    */
+
+    returnedJSONFile.flaggedposts.forEach(thisFlaggedItem){
+
+      /*
+      $(".postContainer").each(function(){
+          if($(this).attr("data-post-timestamp") == thisFlaggedItem.timestamp) // we would need to add an attribute to the loadPost template in index.html
+          {
+            $(this).find(".slider").attr("value", thisFlaggedItem.opacity*100)
+          }
+          
+      })
+
+      */
+
+    }
+
+
+})
+
+async function updateFlagList(archive, updatedFlagList){
+  
+  console.log(updatedFlagList)
+
+  await archive.writeFile('/flaglist.json', JSON.stringify(updatedFlagList));
+}
+
+var thisFlaggedItem; // current rendered slider values
+
+slider.oninput = function() {
+	// on change update this value:
+		var opacity = this.value/100;
+    output.innerHTML = opacity;
+    slider.style.opacity = opacity
+    console.log(opacity)
+
+    thisFlaggedItem = {
+      "timestamp": slider.getAttribute("data-timestamp"),
+       "reported": "flagged",
+       "opacity" : slider.value/100
+    }
+    // console.log("thisFlaggedItem: ", thisFlaggedItem)
+  
+    
+}
+
+slider.onmouseup = function(){
+  console.log("mouseup", thisFlaggedItem)
+
+  // on mouseup, let's update the json file with an async function
+
+  getFlagList(ourDatArchive)
+  .then(function(mostcurrentFlagList){
+
+    mostcurrentFlagList.flaggedposts.forEach(function(flagListItem){
+      // looks for the matching timestamp in comparison to thisFlaggedItem
+      if(flagListItem.timestamp == thisFlaggedItem.timestamp){
+        // if the timestamp matches our current 
+        flagListItem.opacity = thisFlaggedItem.opacity;
+      }
+    })
+
+    console.log("after ", mostcurrentFlagList)
+
+    updateFlagList(ourDatArchive, mostcurrentFlagList)
+    .then(function(){
+      console.log("successful submission")
+    })
+    .catch(function(error){
+      console.log("unsuccessful submission ", error)
+    })
+
+  })
+
+    // with every change, update stored file contents
+    // on mouseleave
+
+}
+
+</script>
+
+</body>
+</html>

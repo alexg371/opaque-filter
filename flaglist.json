@@ -1,8 +1,1 @@
-{
-  "flaggedposts" : [
-      {
-        "timestamp": 1548746747655,
-         "reported": "flagged"
-      }
-    ]
-}
+{"flaggedposts":[{"timestamp":1548746747655,"reported":"flagged","opacity":0.66},{"timestamp":1549746747655,"reported":"flagged","opacity":0.8}]}
