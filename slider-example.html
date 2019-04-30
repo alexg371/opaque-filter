@@ -66,6 +66,21 @@ output.innerHTML = slider.value/100;
 var oururl = "dat://a4edd37faeb80450fdd6f7e0d9d4251360be38fcda9d8d38bc6bfda8de4ab1aa+preview",
     ourDatArchive = new DatArchive(oururl);
 
+/*
+defined functions
+- getFlagList: simply gets our flaglist.json and returns it as a javascript object
+- updateFlagList: writes our updated object to flaglist.json
+
+functions in use
+1. update our interface with the flagged items retrieved from flaglist.json 
+2. 
+
+
+
+*/
+
+
+/* DEFINED FUNCTIONS: */
 // load our file w/ contents as starting point in our local variable:
 async function getFlagList(archive){
 
@@ -75,6 +90,17 @@ async function getFlagList(archive){
   return ourFlagList;
 }
 
+async function updateFlagList(archive, mostcurrentFlagList){
+  // archive is our datArchive instance (i.e. dat url)
+  // updatedFlagList is the object we want to write into flaglist.json
+
+  console.log(mostcurrentFlagList)
+  await archive.writeFile('/flaglist.json', JSON.stringify(mostcurrentFlagList));
+}
+
+
+/* FUNCTIONS IN USE */
+// 1. getFlagList and THEN with returned flagged list, update the interface:
 getFlagList(ourDatArchive)
 .then(function(returnedJSONFile){
   // outline what we do with the file:
@@ -100,9 +126,9 @@ getFlagList(ourDatArchive)
 
     */
 
-    returnedJSONFile.flaggedposts.forEach(thisFlaggedItem){
+    returnedJSONFile.flaggedposts.forEach(thisFlaggedItem){ 
 
-      /*
+      // .postContainer is found in our index.html. each post container is the wrapper for the post
       $(".postContainer").each(function(){
           if($(this).attr("data-post-timestamp") == thisFlaggedItem.timestamp) // we would need to add an attribute to the loadPost template in index.html
           {
@@ -111,22 +137,18 @@ getFlagList(ourDatArchive)
           
       })
 
-      */
+    
 
     }
 
 
 })
 
-async function updateFlagList(archive, updatedFlagList){
-  
-  console.log(updatedFlagList)
 
-  await archive.writeFile('/flaglist.json', JSON.stringify(updatedFlagList));
-}
-
+// 2. 
 var thisFlaggedItem; // current rendered slider values
 
+// slider on interaction: update thisFlaggedItem with current values
 slider.oninput = function() {
 	// on change update this value:
 		var opacity = this.value/100;
@@ -141,11 +163,32 @@ slider.oninput = function() {
     }
     // console.log("thisFlaggedItem: ", thisFlaggedItem)
   
+
+    /*
+    
+    options for shaping behavior in re: to opacity slider
+    - redefine maximum through slider (use set opacity to redefine max value)
+    -// allow slider interaction once per day (would need an additional timestamp to check if you can use it again today)
+
+    how to allow for user education (like what does the opacity imply) (language used?)
+
+
+
+    */
+
     
 }
 
+// once you're done interacting, submit thisFlaggedItem by getting our flaglist, comparing to original, update, and then submit to flaglist.json with our updateFlagList() function
 slider.onmouseup = function(){
   console.log("mouseup", thisFlaggedItem)
+
+  // on mouseup, redefine maximum for slider, and shift the displayed value to maximum:
+  //this.max = thisFlaggedItem.opacity*100
+  //this.value = thisFlaggedItem.opacity*100
+  // we'd need some sort of indicator that it's changed
+
+
 
   // on mouseup, let's update the json file with an async function
 
