@@ -39,6 +39,7 @@
 }
 </style>
 <script type="text/javascript" src="build/network-interfacing.js"></script>
+<!--  -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 </head>
@@ -73,7 +74,18 @@ defined functions
 
 functions in use
 1. update our interface with the flagged items retrieved from flaglist.json 
-2. 
+2. slider interaction
+3. using saved slider interaction, update flaglist.json
+
+
+// 
+next steps
+- value logic for re-adjusting the slider
+- documentation (i.e. how does someone else install this feature)
+  - the (styled) slider-example.html document can be used as an example/documentation explaining what the feature is and how it's used (for reference, maybe look at things like css bootstrap's documentation, flickity carousel documentation, google maps api, mdn docs, beaker browser api) (honestly you could also use it just as an an example, and have the full documentation on a separate webpage)
+
+- interface
+
 
 
 
@@ -179,6 +191,7 @@ slider.oninput = function() {
     
 }
 
+// 3.
 // once you're done interacting, submit thisFlaggedItem by getting our flaglist, comparing to original, update, and then submit to flaglist.json with our updateFlagList() function
 slider.onmouseup = function(){
   console.log("mouseup", thisFlaggedItem)
@@ -187,8 +200,6 @@ slider.onmouseup = function(){
   //this.max = thisFlaggedItem.opacity*100
   //this.value = thisFlaggedItem.opacity*100
   // we'd need some sort of indicator that it's changed
-
-
 
   // on mouseup, let's update the json file with an async function
 
